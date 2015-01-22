@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Checkers</title>
+  <meta name="description" content="Checkers">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet"
+        href="bower_components/html5-boilerplate/css/normalize.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
+  <link rel="stylesheet"
+        href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!--<link href='http://fonts.googleapis.com/css?family=Cinzel:400,700|Raleway' rel='stylesheet' type='text/css'>-->
+  <link rel="stylesheet" href="css/checkers.css"/>
+  <link rel="stylesheet" href="css/responsive.css"/>
+  <link rel="stylesheet"
+        href="vendor/font-awesome-4.2.0/css/font-awesome.min.css"/>
+
+  <script
+      src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
+
+  <script
+      src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="vendor/jquery-ui-1.11.1.custom/jquery-ui.min.js"></script>
+  <!--Enable the drag and drop in mobile device-->
+  <script
+      src="vendor/jquery-ui-touch-punch-0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script
+      src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+  <!--<script src="bower_components/angular/angular.js"></script>-->
+  <!--<script src="bower_components/lodash/dist/lodash.min.js"></script>-->
+  <script
+      src="bower_components/angular-animate/angular-animate.min.js"></script>
+  <!--<script>-->
+    <!--angular.module('myApp', ['ngAnimate']);-->
+  <!--</script>-->
+  <script src="js/services/CheatLogicService.js"></script>
+  <script src="js/controllers/CheatCtrl.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/gameService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/messageService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/stateService.js"></script>
+</head>
+<body ng-cloak ng-controller="CheckersCtrl">
+<section id="board">
+  <div></div>
+</section>
+</body>
+</html>
