@@ -1,0 +1,80 @@
+body {
+  background-image: url("http://us.cdn1.123rf.com/168nwm/ptahi/ptahi1210/ptahi121000002/15713955-green-baize-seamless-background.jpg");
+  font: 100% "Arial Narrow";
+}
+
+/*.card {*/
+  /*position: relative;*/
+  /*float: left;*/
+  /*margin-right: 10px;*/
+  /*width: 150px;*/
+  /*height: 220px;*/
+  /*border-radius: 10px;*/
+  /*background: #fff;*/
+  /*-webkit-box-shadow: 3px 3px 7px rgba(0,0,0,0.3);*/
+  /*box-shadow: 3px 3px 7px rgba(0,0,0,0.3);*/
+/*}*/
+
+/*.card p {*/
+  /*text-align: center;*/
+  /*font: 100px/220px Georgia, Times New Roman, serif;*/
+/*}*/
+
+/*div[class*='suit']:before {*/
+  /*position: absolute;*/
+  /*font-size: 35px;*/
+  /*left: 5px;*/
+  /*top: 5px;*/
+/*}*/
+
+/*div[class*='suit']:after {*/
+  /*position: absolute;*/
+  /*font-size: 35px;*/
+  /*right: 5px;*/
+  /*bottom: 5px;*/
+/*}*/
+
+/*.suitdiamonds:before, .suitdiamonds:after {*/
+  /*content: "♦";*/
+  /*color: #ff0000;*/
+/*}*/
+
+/*.suithearts:before, .suithearts:after {*/
+  /*content: "♥";*/
+  /*color: #ff0000;*/
+/*}*/
+
+/*.suitclubs:before, .suitclubs:after {*/
+  /*content: "♣";*/
+  /*color: #000;*/
+/*}*/
+
+/*.suitspades:before, .suitspades:after {*/
+  /*content: "♠";*/
+  /*color: #000;*/
+/*}*/
+
+
+/*.hand {*/
+  /*margin: 50px;*/
+/*}*/
+
+/* For modern browsers */
+/*.hand:before,*/
+/*.hand:after {*/
+  /*content:"";*/
+  /*display:table;*/
+/*}*/
+
+/*.hand:after {*/
+  /*clear:both;*/
+/*}*/
+
+/* For IE 6/7 (trigger hasLayout) */
+/*.hand {*/
+  /*zoom:1;*/
+/*}*/
+
+/*.card:hover {*/
+  /*cursor: pointer;*/
+/*}*/

@@ -117,18 +117,19 @@
    *          3 - {set: {key: 'middle', value: [] }}
    *      setStage:
    *          4 - {set: {key: 'stage', value: STAGE.DO_CLAIM }}
-   *      setCards:
-   *          5 - {set: {key: 'card0', value: "C2" }}...
-   *          56 - {set: {key: 'card51', value: "SA" }}
-   *      setVisibility:
-   *          57 - {setVisibility: {key: 'card0', value: []}...
-   *          108 - {setVisibility: {key: 'card52', value: []}
    *      shuffle
-   *          109 - {shuffle: ["card0", ..., "card51"]}
+   *          5 - {shuffle: ["card0", ..., "card51"]}
+   *      setCards:
+   *          6 - {set: {key: 'card0', value: "C2" }}...
+   *          57 - {set: {key: 'card51', value: "SA" }}
+   *      setVisibility:
+   *          58 - {setVisibility: {key: 'card0', value: []}...
+   *          109 - {setVisibility: {key: 'card52', value: []}
+
    *
    * Note: Operation III, IV and V are automatically made in the right situation.
    */
-  angular.module('myApp', []).factory('cheatLogicService',
+  angular.module('myApp').factory('cheatLogicService',
       function () {
         /**
          * Check if the object is empty
@@ -159,10 +160,10 @@
 
         // Suit
         var SUIT = {
-          DIAMONDS: "D",
-          HEARTS: "H",
-          SPADES: "S",
-          CLUBS: "C"
+          DIAMONDS: "D", //♦
+          HEARTS: "H", //♥
+          SPADES: "S", //♠
+          CLUBS: "C" //♣
         };
 
         // Rank
@@ -403,9 +404,10 @@
           operations.selfConcat([{set: {key: 'black', value: black}}]);
           operations.selfConcat([{set: {key: 'middle', value: []}}]);
           operations.selfConcat([{set: {key: 'stage', value: STAGE.DO_CLAIM}}]);
+          operations.selfConcat([{shuffle: {keys: shuffleKeys}}]);
           operations.selfConcat(setCards);
           operations.selfConcat(setVisibilities);
-          operations.selfConcat([{shuffle: {keys: shuffleKeys}}]);
+
 
           return operations;
         }
@@ -625,6 +627,8 @@
 
         return {
           isMoveOk: isMoveOk,
+          isEmptyObj: isEmptyObj,
+          getInitialMove: getInitialMove,
           getCard: getCard,
           STAGE: STAGE
         };

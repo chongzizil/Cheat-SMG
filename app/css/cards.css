@@ -1,0 +1,112 @@
+/*This css codes are modified based on the listing reference*/
+/*Ref: http://codepen.io/gavincox/pen/AKkch*/
+/*Ref: http://designshack.net/articles/css/css-card-tricks/*/
+
+.grid {
+  width: 600px;
+  height: 212px;
+}
+.grid > li {
+  position: relative;
+  float: left;
+  margin: 5px -37px 5px 0px;
+  -moz-transition: top 0.5s ease 0.1s, left 0.5s ease 0.1s;
+  -o-transition: top 0.5s ease 0.1s, left 0.5s ease 0.1s;
+  -webkit-transition: top 0.5s ease, left 0.5s ease;
+  -webkit-transition-delay: 0.1s, 0.1s;
+  transition: top 0.5s ease 0.1s, left 0.5s ease 0.1s;
+}
+.grid > li:hover {
+  left: 0px;
+  top: -15px;
+  cursor: pointer;
+  -moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
+  -webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
+  box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
+}
+
+.grid {
+  zoom: 1;
+}
+.grid:before, .grid:after {
+  content: "";
+  display: table;
+}
+.grid:after {
+  clear: both;
+}
+
+.grid {
+  border: 7px solid #030;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+  padding-left: 15px;
+  padding-right: 40px;
+}
+
+.grid {
+  position: relative;
+  margin: 3% auto;
+}
+.grid > li {
+  top: 0px;
+  left: 0px;
+  list-style: none;
+  width: 57px;
+  height: 88px;
+  background-color: #fff;
+  background-image: url("http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/whitey.png");
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border-radius: 7px;
+  -moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.5), 0 0 3px #966432;
+  -webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.5), 0 0 3px #966432;
+  box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.5), 0 0 3px #966432;
+  -moz-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -moz-backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-perspective: 1000;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+  -moz-transform: translateZ(0deg);
+  -webkit-transform: translateZ(0deg);
+  transform: translateZ(0deg);
+}
+
+.grid > li[data-value*='♣'][data-value], .grid > li[data-value*='♠'][data-value] {
+  color: #222;
+}
+.grid > li[data-value*='♦'][data-value], .grid > li[data-value*='♥'][data-value] {
+  color: #a00;
+}
+.grid > li[data-value]:before, .grid > LI[data-value]:after {
+  text-align: center;
+  content: attr(data-value);
+  width: 1em;
+  position: absolute;
+  font-size: 1.8em;
+  line-height: 0.75em;
+}
+.grid > li[data-value]:after {
+  right: 0;
+  bottom: 4%;
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.grid > li[data-value=' '][data-value] > p {
+  width: 90%;
+  height: 92%;
+  margin: 5% auto 0;
+  background-image: url("http://www.titanui.com/wp-content/uploads/2013/01/Violet-Classical-Pattern-Background-1.jpg");
+  background-position: center center;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border-radius: 7px;
+}
