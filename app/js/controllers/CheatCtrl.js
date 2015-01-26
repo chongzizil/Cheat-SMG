@@ -197,7 +197,6 @@
           // In case the board is not updated
           if (!$scope.$$phase) {
             $scope.$apply();
-            console.log("=-=-=-=-=-=");
           }
 
           // If the game ends, send the end game operation

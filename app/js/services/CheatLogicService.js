@@ -117,11 +117,11 @@
    *          3 - {set: {key: 'middle', value: [] }}
    *      setStage:
    *          4 - {set: {key: 'stage', value: STAGE.DO_CLAIM }}
-   *      shuffle
-   *          5 - {shuffle: ["card0", ..., "card51"]}
    *      setCards:
    *          6 - {set: {key: 'card0', value: "C2" }}...
    *          57 - {set: {key: 'card51', value: "SA" }}
+   *      shuffle
+   *          5 - {shuffle: ["card0", ..., "card51"]}
    *      setVisibility:
    *          58 - {setVisibility: {key: 'card0', value: []}...
    *          109 - {setVisibility: {key: 'card52', value: []}
@@ -482,11 +482,9 @@
           operations.selfConcat([{set: {key: 'black', value: black}}]);
           operations.selfConcat([{set: {key: 'middle', value: []}}]);
           operations.selfConcat([{set: {key: 'stage', value: STAGE.DO_CLAIM}}]);
-          operations.selfConcat([{shuffle: {keys: shuffleKeys}}]);
           operations.selfConcat(setCards);
+          operations.selfConcat([{shuffle: {keys: shuffleKeys}}]);
           operations.selfConcat(setVisibilities);
-
-
           return operations;
         }
 
