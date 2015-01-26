@@ -230,7 +230,7 @@
         //updateUI({playMode: "passAndPlay", stateAfterMove: {}, turnIndexAfterMove: 0, yourPlayerIndex: -2});
 
         //if ($(window).width() < 800) {
-          scaleBodyService.scaleBody({width: 750, height: 1200});
+        //  scaleBodyService.scaleBody({width: 750, height: 1200});
         //}
 
         /**
