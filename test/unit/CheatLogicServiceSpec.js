@@ -362,7 +362,7 @@
       defaultState.stage = cheatLogicService.STAGE.CHECK_CLAIM;
 
       expectMoveOk(0, defaultState,[
-        {setTurn: {turnIndex: 1}},
+        {setTurn: {turnIndex: 0}},
         {set: {key: 'black', value: [27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 26, 39] }},
         {set: {key: 'middle', value: [] }},
         {set: {key: 'stage', value: cheatLogicService.STAGE.DO_CLAIM }},
@@ -379,7 +379,7 @@
       defaultState.stage = cheatLogicService.STAGE.CHECK_CLAIM;
 
       expectMoveOk(0, defaultState,[
-        {setTurn: {turnIndex: 1}},
+        {setTurn: {turnIndex: 0}},
         {set: {key: 'white', value: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39] }},
         {set: {key: 'middle', value: [] }},
         {set: {key: 'stage', value: cheatLogicService.STAGE.DO_CLAIM }},
@@ -393,7 +393,7 @@
       defaultState.black = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51];
       defaultState.middle = [];
       defaultState.claim = [];
-      defaultState.stage = cheatLogicService.STAGE.WIN;
+      defaultState.stage = cheatLogicService.STAGE.END;
 
       expectMoveOk(0, defaultState,[
         {endMatch: {endMatchScores: [1, 0]}}
@@ -405,7 +405,7 @@
       defaultState.black = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51];
       defaultState.middle = [];
       defaultState.claim = [];
-      defaultState.stage = cheatLogicService.STAGE.WIN;
+      defaultState.stage = cheatLogicService.STAGE.END;
 
       expectIllegalMove(0, defaultState,[
         {endMatch: {endMatchScores: [1, 0]}}

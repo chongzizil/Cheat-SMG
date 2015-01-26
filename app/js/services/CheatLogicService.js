@@ -125,17 +125,16 @@
    *      setVisibility:
    *          58 - {setVisibility: {key: 'card0', value: []}...
    *          109 - {setVisibility: {key: 'card52', value: []}
-
+   *
    *
    * Note: Operation III, IV and V are automatically made in the right situation.
    */
-  angular.module('myApp').factory('cheatLogicService',
+  // For unit tests...
+  angular.module('myApp', []).factory('cheatLogicService',
+  //angular.module('myApp').factory('cheatLogicService',
       function () {
         /**
          * Check if the object is empty
-         *
-         * @param obj the object to be checked
-         * @returns true if is empty, otherwise false.
          */
         function isEmptyObj(obj) {
           var prop;
@@ -155,7 +154,7 @@
           DO_CLAIM: "DO_CLAIM",
           DECLARE_CHEATER: "DECLARE_CHEATER",
           CHECK_CLAIM: "CHECK_CLAIM",
-          WIN: "WIN"
+          END: "END"
         };
 
         // Suit
@@ -182,6 +181,32 @@
           KING: 'K',
           ACE: 'A'
         };
+
+        /**
+         * Get possible ranks for claiming.
+         * If the rank passed in is undefined, then there's no previous claim
+         * and all ranks are selectable, otherwise only ranks 1 close to or
+         * equal to the rank of the previous claim are selectable.
+         * @param rank
+         * @returns {Array}
+         */
+        function getRankArray(rank) {
+          var res = [];
+
+          for (var index in RANK) {
+            if (angular.isUndefined(rank)) {
+              // Return all ranks
+              res.push(RANK[index]);
+            } else {
+              // Return 1 close ranks and itself
+              if (isCloseRank(rank, RANK[index])) {
+                res.push(RANK[index]);
+              }
+            }
+          }
+
+          return res;
+        }
 
         /**
          * Get the rank score.
@@ -219,16 +244,13 @@
             default:
               throw new Error("Illegal rank!");
           }
-
         }
 
         /**
          * Concat two array by appending the later one to the former one...
-         * @param array an array
-         * @param append an array
-         * @return array
          */
         Array.prototype.selfConcat = function(append) {
+          check(append.constructor === Array);
           for (var i = 0; i < append.length; i++) {
             this.push(append[i]);
           }
@@ -236,21 +258,18 @@
 
         /**
          * Subtract elements from original arrays
-         * @param elementsToRemove
          */
-        Array.prototype.subtract = function(elementsToRemove) {
+        Array.prototype.selfSubtract = function(elementsToRemove) {
           var originalLength = this.length;
-          check(this.containsAll(elementsToRemove));
           this.removeAll(elementsToRemove);
-          check(originalLength === this.length + elementsToRemove.length);
+          check(originalLength === this.length + elementsToRemove.length, "The elements are not proper removed...", this, elementsToRemove);
         };
 
         /**
          * Check if the array contains all the elements.
-         * @param elementsToCheck
-         * @returns {boolean}
          */
         Array.prototype.containsAll = function(elementsToCheck) {
+          check(elementsToCheck.constructor === Array, "The argument is not an array!");
           for (var i = 0; i < elementsToCheck.length; i++) {
             if (this.indexOf(elementsToCheck[i]) == -1) {
               return false;
@@ -261,9 +280,10 @@
 
         /**
          * Remove all elements from the array
-         * @param elementsToRemove
          */
         Array.prototype.removeAll = function(elementsToRemove) {
+          check(elementsToRemove.constructor === Array, "The argument is not an array!");
+          check(this.containsAll(elementsToRemove), "The array does not contain all the elements.", this, elementsToRemove);
           for (var i = 0; i < elementsToRemove.length; i++) {
             var index = this.indexOf(elementsToRemove[i]);
             this.splice(index, 1);
@@ -272,15 +292,18 @@
 
         /**
          * Return a clone array
-         * @returns {Array.<T>}
          */
         Array.prototype.clone = function() {
           return this.slice(0);
         };
 
-        function check(val) {
+        function check(val, description) {
           if (!val) {
-            throw new Error('Fails the check!!!');
+            console.log(description);
+            for (var i = 2; i < arguments.length; i++) {
+              console.log(arguments[i]);
+            }
+            throw new Error('Fails!');
           }
         }
 
@@ -290,6 +313,7 @@
          * @returns {*}
          */
         function getCard(i) {
+          check(i >= 0 && i <52, "Illegal index");
           var suit,
             rank;
 
@@ -359,10 +383,64 @@
           return diff <= 1;
         }
 
+        /**
+         * Ref: http://stackoverflow.com/questions/18806210/generating-non-repeating-random-numbers-in-js
+         * Shuffle an array
+         */
+        function shuffle(array) {
+          var i = array.length,
+              j = 0,
+              temp;
+
+          while (i--) {
+
+            j = Math.floor(Math.random() * (i+1));
+
+            // swap randomly chosen element with current element
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+
+          }
+
+          return array;
+        }
+
+        /**
+         * Create computer move operations.
+         */
+        function createComputerMove(state, turnIndexBeforeMove) {
+          var possibleMove = [];
+
+          switch(state.stage) {
+            case STAGE.DO_CLAIM:
+                var claimedCardNum = state.black.length >= 4 ? (Math.floor(Math.random() * 3 + 1)) : state.black.length;
+                var possibleClaimRanks = getRankArray(state.claim[1]);
+                var claim = [claimedCardNum, possibleClaimRanks[Math.floor(Math.random() * possibleClaimRanks.length)]];
+                var aiCards = state.black.clone();
+                shuffle(aiCards);
+                var claimedCards = aiCards.slice(0, claimedCardNum);
+              possibleMove = getClaimMove(state, turnIndexBeforeMove, claim, claimedCards);
+              break;
+            case STAGE.DECLARE_CHEATER:
+                var declareCheater = Math.random() > 0.5;
+                possibleMove = getDeclareCheaterMove(state, turnIndexBeforeMove, declareCheater);
+              break;
+            case STAGE.CHECK_CLAIM:
+                possibleMove = getMoveCheckIfCheated(state, turnIndexBeforeMove);
+              break;
+          }
+
+          return possibleMove;
+        }
+
+        /**
+         * Return the winner's index, if no winner is present, return -1;
+         */
         function getWinner(state) {
           if (state.white.length === 0) {
             return 0;
-          } else if (state.balck.length === 0) {
+          } else if (state.black.length === 0) {
             return 1;
           } else {
             return -1;
@@ -414,24 +492,11 @@
 
         /**
          * Get the move operations for declaring cheat
-         * @param state
-         * @param turnIndexBeforeMove
-         * @returns {Array}
          */
-        function getDeclareCheaterMove(state, turnIndexBeforeMove, lastMove) {
+        function getDeclareCheaterMove(state, turnIndexBeforeMove, declareCheater) {
           var operations = [];
-          check(lastMove[1].set.value === STAGE.DO_CLAIM || lastMove[1].set.value === STAGE.CHECK_CLAIM);
-          if (lastMove[1].set.value === STAGE.DO_CLAIM) {
-            // Skip declaring cheater if the opponent does not empty all cards
-            if (turnIndexBeforeMove === 0) {
-              // White
-              check(state.black.length !== 0);
-            } else {
-              check(state.white.length !== 0);
-            }
-            operations.selfConcat([{setTurn: {turnIndex: turnIndexBeforeMove}}]);
-            operations.selfConcat([{set: {key: 'stage', value: STAGE.DO_CLAIM }}]);
-          } else if (lastMove[1].set.value === STAGE.CHECK_CLAIM) {
+
+          if (declareCheater) {
             // No skipping
             operations.selfConcat([{setTurn: {turnIndex: turnIndexBeforeMove}}]);
             operations.selfConcat([{set: {key: 'stage', value: STAGE.CHECK_CLAIM }}]);
@@ -441,6 +506,16 @@
               setVisibilities.selfConcat([{setVisibility: {key: 'card' + state.middle[i], visibleToPlayerIndexes: [turnIndexBeforeMove]}}]);
             }
             operations.selfConcat(setVisibilities);
+          } else {
+            // Skip declaring cheater if the opponent does not empty all cards
+            if (turnIndexBeforeMove === 0) {
+              // White
+              check(state.black.length !== 0);
+            } else {
+              check(state.white.length !== 0);
+            }
+            operations.selfConcat([{setTurn: {turnIndex: turnIndexBeforeMove}}]);
+            operations.selfConcat([{set: {key: 'stage', value: STAGE.DO_CLAIM }}]);
           }
 
           return operations;
@@ -462,7 +537,7 @@
           return false;
         }
 
-        function getMoveCheckIfCheated(state, turnIndexBeforeMove, lastMove) {
+        function getMoveCheckIfCheated(state, turnIndexBeforeMove) {
           var loserIndex = didCheat(state) ? 1 - turnIndexBeforeMove : turnIndexBeforeMove,
             loserCards = [],
             loserNewCards,
@@ -476,7 +551,7 @@
           }
           loserNewCards = loserCards.concat(state.middle);
 
-          operations.selfConcat([{setTurn: {turnIndex: 1 - turnIndexBeforeMove}}]);
+          operations.selfConcat([{setTurn: {turnIndex: turnIndexBeforeMove}}]);
 
           if (loserIndex === 0) {
             operations.selfConcat([{set: {key: 'white', value: loserNewCards}}]);
@@ -526,7 +601,7 @@
           }
 
           newWorB = lastWorB.clone();
-          newWorB.subtract(cardsToMoveToMiddle);
+          newWorB.selfSubtract(cardsToMoveToMiddle);
 
           lastM = state.middle;
           newM = lastM.concat(cardsToMoveToMiddle);
@@ -589,16 +664,18 @@
                 var lastM = stateBeforeMove.middle;
                 var newM = move[2].set.value;
                 var diffM = newM.clone();
-                diffM.subtract(lastM);
+                diffM.selfSubtract(lastM);
                 expectedMove = getClaimMove(stateBeforeMove, turnIndexBeforeMove, claim, diffM);
                 break;
               case STAGE.DECLARE_CHEATER:
-                expectedMove = getDeclareCheaterMove(stateBeforeMove, turnIndexBeforeMove, move);
+                check(move[1].set.value === STAGE.DO_CLAIM || move[1].set.value === STAGE.CHECK_CLAIM);
+                var declareCheater = move[1].set.value === STAGE.CHECK_CLAIM;
+                expectedMove = getDeclareCheaterMove(stateBeforeMove, turnIndexBeforeMove, declareCheater);
                 break;
               case STAGE.CHECK_CLAIM:
-                expectedMove = getMoveCheckIfCheated(stateBeforeMove, turnIndexBeforeMove, move);
+                expectedMove = getMoveCheckIfCheated(stateBeforeMove, turnIndexBeforeMove);
                 break;
-              case STAGE.WIN:
+              case STAGE.END:
                 expectedMove = getWinMove(stateBeforeMove);
                 break;
               default:
@@ -613,12 +690,11 @@
           }
 
           if (!angular.equals(move, expectedMove)) {
-            console.log("=========MoveToCheck=========");
-            console.log(JSON.stringify(move));
-            console.log("=========ExpectMove=========");
-            console.log(JSON.stringify(expectedMove));
-            console.log("=========END=========");
-
+            //console.log("=========MoveToCheck=========");
+            //console.log(JSON.stringify(move));
+            //console.log("=========ExpectMove=========");
+            //console.log(JSON.stringify(expectedMove));
+            //console.log("=========END=========");
             return false;
           }
 
@@ -628,8 +704,15 @@
         return {
           isMoveOk: isMoveOk,
           isEmptyObj: isEmptyObj,
+          createComputerMove: createComputerMove,
           getInitialMove: getInitialMove,
+          getClaimMove: getClaimMove,
+          getDeclareCheaterMove: getDeclareCheaterMove,
+          getMoveCheckIfCheated: getMoveCheckIfCheated,
+          getWinMove: getWinMove,
           getCard: getCard,
+          getWinner: getWinner,
+          getRankArray: getRankArray,
           STAGE: STAGE
         };
       });

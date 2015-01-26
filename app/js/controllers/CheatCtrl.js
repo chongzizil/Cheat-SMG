@@ -43,20 +43,90 @@
    * 7:odd    ['WM', '--', 'WM', '--', 'WM', '--', 'WM', '--']]
    */
   angular.module('myApp').controller('CheatCtrl',
-      ['$scope', '$animate', '$timeout', '$q', 'cheatLogicService', 'gameService',
-        function ($scope, $animate, $timeout, $q, cheatLogicService, gameService) {
+      ['$scope', '$animate', '$timeout', '$q', 'cheatLogicService', 'gameService', 'scaleBodyService',
+      function ($scope, $animate, $timeout, $q, cheatLogicService, gameService, scaleBodyService) {
+        // Get the stage objects for convenience
+        var STAGE = cheatLogicService.STAGE;
 
-        // Test state
-        //$scope.state = {};
-        //$scope.state.white = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
-        //$scope.state.black = [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51];
-        //$scope.state.middle = [22, 23, 24, 25];
-        //$scope.state.stage = cheatLogicService.STAGE.DO_CLAIM;
-        //for (var i = 0; i < 52; i++) {
-        //  $scope.state['card' + i] = cheatLogicService.getCard(i);
-        //}
-        //  console.log(JSON.stringify($scope.state));
+        // Return true if the card (index) is selected
+        $scope.isSelected = function(card) {
+          return $scope.selectedCards.indexOf(card) !== -1;
+        };
 
+        // Return true if at least one card is selected
+        $scope.hasSelectedCards = function() {
+          return $scope.selectedCards.length > 0;
+        };
+
+        // Select a card
+        $scope.selectCard = function(card) {
+          if ($scope.isYourTurn) {
+            // Must select in the player's turn
+            if ($scope.selectedCards.indexOf(card) !== -1) {
+              // The card is already selected, hence cancel the selection
+              var index = $scope.selectedCards.indexOf(card);
+              $scope.selectedCards.splice(index, 1);
+            } else if ($scope.selectedCards.length < 4) {
+              // Only select at most 4 cards!
+              var yourCards = [];
+              if ($scope.yourPlayerIndex === 0) {
+                yourCards = $scope.state.white;
+              } else {
+                yourCards = $scope.state.black;
+              }
+
+              if (yourCards.indexOf(card) !== -1) {
+                // Select!
+                $scope.selectedCards.push(card);
+              }
+            }
+          }
+        };
+
+        // Check the current stage
+        $scope.checkStage = function(stage) {
+          return $scope.state.stage === stage;
+        };
+
+        // Update the ranks for claiming
+        function updateClaimRanks () {
+          if (angular.isUndefined($scope.state.claim)) {
+            $scope.claimRanks = cheatLogicService.getRankArray();
+          } else {
+            var rank = $scope.state.claim[1];
+            $scope.claimRanks = cheatLogicService.getRankArray(rank);
+          }
+        }
+
+        // Make a claim
+        $scope.claim = function(rank) {
+          var claim = [$scope.selectedCards.length, rank];
+          var operations = cheatLogicService.getClaimMove($scope.state, $scope.yourPlayerIndex, claim, $scope.selectedCards);
+          gameService.makeMove(operations)
+        };
+
+        // Declare a cheater or pass
+        $scope.declare = function (declareCheater) {
+          var operations = cheatLogicService.getDeclareCheaterMove($scope.state, $scope.yourPlayerIndex, declareCheater);
+          gameService.makeMove(operations)
+        };
+
+        // Check the declaration
+        function checkDeclaration() {
+          var operations = cheatLogicService.getMoveCheckIfCheated($scope.state, $scope.yourPlayerIndex);
+          gameService.makeMove(operations);
+        }
+
+        // Check if the game ends, and if so, send the end game operations
+        function checkEndGame() {
+          var winner = cheatLogicService.getWinner($scope.state);
+          if (winner != -1) {
+            var operation = cheatLogicService.getWinMove($scope.state);
+            gameService.makeMove(operation);
+          }
+        }
+
+        // Get the card data value for css usage
         $scope.getCardDataValue = function(i) {
           var dataValue = " ";
           if ($scope.state['card' + i] !== null) {
@@ -84,36 +154,82 @@
           return dataValue;
         };
 
+        // Send computer move
+        function sendComputerMove() {
+          var operations = cheatLogicService.createComputerMove($scope.state, $scope.currIndex);
+          console.log("AI makes a move!");
+          gameService.makeMove(operations);
+
+        }
+
         /**
          * This method update the game's UI.
-         * @param params
          */
         function updateUI(params) {
-          var turnIndexBeforeMove = params.turnIndexBeforeMove;
           // Get the new state
           $scope.state = params.stateAfterMove;
+          $scope.currIndex = params.turnIndexAfterMove;
           $scope.yourPlayerIndex = params.yourPlayerIndex;
+          $scope.isYourTurn = params.turnIndexAfterMove >= 0 && // game is ongoing
+              params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
+          $scope.isAiMode = $scope.isYourTurn
+              && params.playersInfo[params.yourPlayerIndex].playerId === '';
+          $scope.selectedCards = [];
 
-          if (cheatLogicService.isEmptyObj($scope.state)) {
+          if (cheatLogicService.isEmptyObj(params.stateAfterMove)) {
             // Initialize the board...
             gameService.makeMove(cheatLogicService.getInitialMove());
+          }
+
+          if (params.playMode === 'playAgainstTheComputer' || params.playMode === 'passAndPlay') {
+            $scope.playerOneCards = $scope.state.white;
+            $scope.playerTwoCards = $scope.state.black;
           } else {
-            $scope.isYourTurn = params.turnIndexAfterMove >= 0 && // game is ongoing
-            params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
-
-            $scope.isAiMode = $scope.isYourTurn
-            && params.playersInfo[params.yourPlayerIndex].playerId === '';
-
-            if ($scope.isAiMode) {
-              $scope.isYourTurn = false;
-              // Wait 500 milliseconds until animation ends.
-              $timeout(aiMakeMove, 500);
+            if (params.yourPlayerIndex === 0 && $scope.isYourTurn) {
+              $scope.playerOneCards =  $scope.state.white;
+              $scope.playerTwoCards = $scope.state.black;
+            } else {
+              $scope.playerOneCards =  $scope.state.black;
+              $scope.playerTwoCards = $scope.state.white;
             }
+          }
+
+          // In case the board is not updated
+          if (!$scope.$$phase) {
+            $scope.$apply();
+            console.log("=-=-=-=-=-=");
+          }
+
+          // If the game ends, send the end game operation
+          checkEndGame();
+
+          if ($scope.isYourTurn) {
+            switch($scope.state.stage) {
+              case STAGE.DO_CLAIM:
+                updateClaimRanks();
+                break;
+              case STAGE.DECLARE_CHEATER:
+                break;
+              case STAGE.CHECK_CLAIM:
+                checkDeclaration();
+                break;
+              default:
+            }
+          }
+
+          if ($scope.isAiMode) {
+            $scope.isYourTurn = false;
+            // Wait 500 milliseconds until animation ends.
+            $timeout(sendComputerMove, 20000);
           }
         }
 
         // Before getting any updateUI, we show an empty board to a viewer (so you can't perform moves).
         //updateUI({playMode: "passAndPlay", stateAfterMove: {}, turnIndexAfterMove: 0, yourPlayerIndex: -2});
+
+        if ($(window).width() < 800) {
+          scaleBodyService.scaleBody({width: 750, height: 1200});
+        }
 
         /**
          * Set the game!
