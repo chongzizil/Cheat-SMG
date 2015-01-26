@@ -85,6 +85,9 @@
 
         // Check the current stage
         $scope.checkStage = function(stage) {
+          if (angular.isUndefined(state)) {
+            return false;
+          }
           return $scope.state.stage === stage;
         };
 
