@@ -222,16 +222,16 @@
           if ($scope.isAiMode) {
             $scope.isYourTurn = false;
             // Wait 500 milliseconds until animation ends.
-            $timeout(sendComputerMove, 20000);
+            $timeout(sendComputerMove, 1500);
           }
         }
 
         // Before getting any updateUI, we show an empty board to a viewer (so you can't perform moves).
         //updateUI({playMode: "passAndPlay", stateAfterMove: {}, turnIndexAfterMove: 0, yourPlayerIndex: -2});
 
-        if ($(window).width() < 800) {
+        //if ($(window).width() < 800) {
           scaleBodyService.scaleBody({width: 750, height: 1200});
-        }
+        //}
 
         /**
          * Set the game!
