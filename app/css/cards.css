@@ -27,10 +27,10 @@
 }
 
 .grid > li {
-  /*0.75*/
-  width: 42.75px;
-  height: 66px;
-  margin: 10px -22px 10px 0px;
+  /*0.70*/
+  width: 39.9px;
+  height: 61.6px;
+  margin: 10px -23px 10px 0px;
   top: 0px;
   left: 0px;
   position: relative;
