@@ -1,0 +1,51 @@
+/*Small Devices (Tablets)*/
+@media only screen and (min-width: 768px) {
+  /*1*/
+  .grid > li {
+    width: 57px;
+    height: 88px;
+  }
+
+  .grid {
+    min-height: 108px;
+  }
+}
+
+/*Medium devices*/
+@media only screen and (min-width: 992px) {
+  /*1*/
+  .grid > li {
+    width: 57px;
+    height: 88px;
+  }
+
+  .grid {
+    min-height: 108px;
+  }
+}
+
+/*Large devices*/
+@media only screen and (min-width: 1200px) {
+  /*1.2*/
+  .grid > li {
+    width: 68.4px;
+    height: 105.6px;
+  }
+
+  .grid {
+    min-height: 125.6px;
+  }
+}
+
+/*Large devices*/
+@media only screen and (min-width: 1920px) {
+  /*1.5*/
+  .grid > li {
+    width: 85.5px;
+    height: 132px;
+  }
+
+  .grid {
+    min-height: 152px;
+  }
+}

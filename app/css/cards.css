@@ -5,6 +5,7 @@
 /* Grid where holds the poker cards :) */
 .grid {
   width: 100%;
+  min-height: 86px;
   border: 7px solid #030;
   -moz-border-radius: 15px;
   -webkit-border-radius: 15px;
@@ -26,8 +27,9 @@
 }
 
 .grid > li {
-  width: 57px;
-  height: 88px;
+  /*0.75*/
+  width: 42.75px;
+  height: 66px;
   margin: 10px -22px 10px 0px;
   top: 0px;
   left: 0px;
