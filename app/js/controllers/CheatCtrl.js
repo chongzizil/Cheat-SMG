@@ -38,8 +38,8 @@
 
         // Return true if the card can be dragged/selected...
         $scope.canDrag = function (card) {
-          if ($scope.isYourTurn) {
-            if ($scope.middle.indexOf(card) !== -1 && $scope.state["card" + card].substring(1) != null) {
+          if ($scope.isYourTurn && $scope.state["card" + card] != null) {
+            if ($scope.middle.indexOf(card) !== -1) {
               return true;
             } else if ($scope.middle.length - $scope.state.middle.length < 4) {
               return true;
