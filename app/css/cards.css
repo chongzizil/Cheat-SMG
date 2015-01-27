@@ -62,20 +62,18 @@
   transition: top 0.5s ease 0.1s, left 0.5s ease 0.1s;
 }
 
-.grid > li.selected {
-  left: 0px;
-  top: -15px;
-  -moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-  -webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-  box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-}
+/*.grid > li.selected {*/
+  /*-moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+  /*-webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+  /*box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+/*}*/
 
-.grid > li:hover {
-  cursor: pointer;
-  -moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-  -webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-  box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-}
+/*.grid > li:hover {*/
+  /*cursor: pointer;*/
+  /*-moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+  /*-webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+  /*box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+/*}*/
 
 .grid > li[data-value*='♣'][data-value], .grid > li[data-value*='♠'][data-value] {
   color: #222;

@@ -3,131 +3,111 @@
   /*global angular, platform, Audio */
 
   /**
-   * This is the controller for Checkers.
+   * This is the controller for cheat.
    *
-   * TO be clear in case of confusion, the state has two different format in the
-   * controller:
+   * The board has three section, holding the cards of the player one, player
+   * two and the middle area's.
    *
-   * TO be clear, the state has two different format in the controller:
-   * 1. uiState: It's represented as an array of objects with length of 64. Each
-   *             element is a square which contains all its information such as
-   *             is it a white crown (king) or black crown (king).
-   *             Unlike the game API state, All light squares are also stored.
-   * e.g. [{
-   *         isBlackMan: boolean,
-   *         isBlackCro: boolean,
-   *         isWhiteMan: boolean,
-   *         isWhiteCro: boolean,
-   *         isEmpty: boolean,
-   *         isDark: boolean,
-   *         isLight: boolean,
-   *         canSelect: boolean,
-   *         isSelected: boolean,
-   *         // Background image path
-   *         bgSrc: string,
-   *         // Piece image path
-   *         pieceSrc: string
-   *      }...]
+   * The section for player one is the main section, from the point of the
+   * player's view. All cards are sorted according to ranks.
    *
-   * 2. GameApiState: It's represented as an object. The game board within is a
-   *                  two dimensional array (8*8).
+   * The section for player two is usually hidden which holds the opponent's
+   * cards.
    *
-   *             0     1     2     3     4     5     6     7
-   * 0:even  [['--', 'BM', '--', 'BM', '--', 'BM', '--', 'BM'],
-   * 1:odd    ['BM', '--', 'BM', '--', 'BM', '--', 'BM', '--'],
-   * 2:even   ['--', 'BM', '--', 'BM', '--', 'BM', '--', 'BM'],
-   * 3:odd    ['DS', '--', 'DS', '--', 'DS', '--', 'DS', '--'],
-   * 4:even   ['--', 'DS', '--', 'DS', '--', 'DS', '--', 'DS'],
-   * 5:odd    ['WM', '--', 'WM', '--', 'WM', '--', 'WM', '--'],
-   * 6:even   ['--', 'WM', '--', 'WM', '--', 'WM', '--', 'WM'],
-   * 7:odd    ['WM', '--', 'WM', '--', 'WM', '--', 'WM', '--']]
+   * The section for middle area holds all the claimed and selected cards.
+   * Claimed cards will remain hidden and the selected cards are not until
+   * claimed.
    */
   angular.module('myApp').controller('CheatCtrl',
-      ['$scope', '$animate', '$timeout', '$q', 'cheatLogicService', 'gameService', 'scaleBodyService',
-      function ($scope, $animate, $timeout, $q, cheatLogicService, gameService, scaleBodyService) {
+      ['$scope', '$animate', '$timeout', '$q', 'cheatLogicService', 'gameService',
+      function ($scope, $animate, $timeout, $q, cheatLogicService, gameService) {
         // Get the stage objects for convenience
         var STAGE = cheatLogicService.STAGE;
 
         // Return true if the card (index) is selected
         $scope.isSelected = function(card) {
-          return $scope.selectedCards.indexOf(card) !== -1;
+          return $scope.middle.indexOf(card) !== -1;
         };
 
         // Return true if at least one card is selected
         $scope.hasSelectedCards = function() {
-          return $scope.selectedCards.length > 0;
+          // The cards in the middle area is more than the cards in the state's
+          // original middle area
+          return $scope.middle.length > $scope.state.middle.length;
+        };
+
+        // Return true if the card can be dragged/selected...
+        $scope.canDrag = function (card) {
+          if ($scope.isYourTurn) {
+            if ($scope.middle.indexOf(card) !== -1 && $scope.state["card" + card].substring(1) != null) {
+              return true;
+            } else if ($scope.middle.length - $scope.state.middle.length < 4) {
+              return true;
+            }
+          }
+
+          return false;
+        };
+
+        // Store the card for later use during drag and drop
+        $scope.storeDraggingCard = function (card) {
+          $scope.draggingCard = parseInt(card);
         };
 
         // Select a card
         $scope.selectCard = function(card) {
           if ($scope.isYourTurn) {
             // Must select in the player's turn
-            if ($scope.selectedCards.indexOf(card) !== -1) {
+            if ($scope.middle.indexOf(card) !== -1) {
               // The card is already selected, hence cancel the selection
-              var index = $scope.selectedCards.indexOf(card);
-              $scope.selectedCards.splice(index, 1);
-            } else if ($scope.selectedCards.length < 4) {
+              // First delete the card in the middle area, then add it back
+              // to the player one area
+              $scope.middle.splice($scope.middle.indexOf(card), 1);
+              $scope.playerOneCards.push(card);
+            } else if ($scope.middle.length - $scope.state.middle.length < 4) {
               // Only select at most 4 cards!
-              var yourCards = [];
-              if ($scope.yourPlayerIndex === 0) {
-                yourCards = $scope.state.white;
-              } else {
-                yourCards = $scope.state.black;
-              }
-
-              if (yourCards.indexOf(card) !== -1) {
-                // Select!
-                $scope.selectedCards.push(card);
+              if ($scope.playerOneCards.indexOf(card) !== -1) {
+                // Select the card.
+                // First delete it from player one area, then add it to the
+                // middle area
+                $scope.playerOneCards.splice($scope.playerOneCards.indexOf(card), 1);
+                $scope.middle.push(card);
               }
             }
           }
+          sortRanks();
+          console.log(JSON.stringify($scope.middle));
+
+
+          // In case the board is not updated
+          if (!$scope.$$phase) {
+            $scope.$apply();
+          }
+
         };
 
         // Check the current stage
         $scope.checkStage = function(stage) {
-          if (angular.isUndefined(state)) {
+          if (angular.isUndefined($scope.state)) {
             return false;
           }
           return $scope.state.stage === stage;
         };
 
-        // Update the ranks for claiming
-        function updateClaimRanks () {
-          if (angular.isUndefined($scope.state.claim)) {
-            $scope.claimRanks = cheatLogicService.getRankArray();
-          } else {
-            var rank = $scope.state.claim[1];
-            $scope.claimRanks = cheatLogicService.getRankArray(rank);
-          }
-        }
-
         // Make a claim
         $scope.claim = function(rank) {
-          var claim = [$scope.selectedCards.length, rank];
-          var operations = cheatLogicService.getClaimMove($scope.state, $scope.yourPlayerIndex, claim, $scope.selectedCards);
+          var claim = [$scope.middle.length - $scope.state.middle.length, rank];
+          var diffM = $scope.middle.clone();
+          diffM.selfSubtract($scope.state.middle);
+          var operations = cheatLogicService.getClaimMove($scope.state, $scope.currIndex, claim, diffM);
           gameService.makeMove(operations)
         };
 
         // Declare a cheater or pass
         $scope.declare = function (declareCheater) {
-          var operations = cheatLogicService.getDeclareCheaterMove($scope.state, $scope.yourPlayerIndex, declareCheater);
+          var operations = cheatLogicService.getDeclareCheaterMove($scope.state, $scope.currIndex, declareCheater);
           gameService.makeMove(operations)
         };
-
-        // Check the declaration
-        function checkDeclaration() {
-          var operations = cheatLogicService.getMoveCheckIfCheated($scope.state, $scope.yourPlayerIndex);
-          gameService.makeMove(operations);
-        }
-
-        // Check if the game ends, and if so, send the end game operations
-        function checkEndGame() {
-          var winner = cheatLogicService.getWinner($scope.state);
-          if (winner != -1) {
-            var operation = cheatLogicService.getWinMove($scope.state);
-            gameService.makeMove(operation);
-          }
-        }
 
         // Get the card data value for css usage
         $scope.getCardDataValue = function(i) {
@@ -142,7 +122,7 @@
                 suitChar = '\u2666';
                 break;
               case "H":
-                suitChar = "\u2764";
+                suitChar = "\u2665";
                 break;
               case "S":
                 suitChar = "\u2660";
@@ -157,6 +137,48 @@
           return dataValue;
         };
 
+
+        // Sort the cards according to the ranks
+        function sortRanks() {
+          $scope.playerOneCards.sort(function (cardA, cardB) {
+            if ($scope.state["card" + cardA] !== null) {
+              // Only sort the cards while they are not hidden
+              var rankA = $scope.state["card" + cardA].substring(1);
+              var rankB = $scope.state["card" + cardB].substring(1);
+              var scoreA = cheatLogicService.getRankScore(rankA);
+              var scoreB = cheatLogicService.getRankScore(rankB);
+              return scoreA - scoreB;
+            }
+            return 1;
+          });
+        }
+
+        // Update the ranks for claiming
+        function updateClaimRanks () {
+          if (angular.isUndefined($scope.state.claim)) {
+            $scope.claimRanks = cheatLogicService.getRankArray();
+          } else {
+            var rank = $scope.state.claim[1];
+            $scope.claimRanks = cheatLogicService.getRankArray(rank);
+          }
+        }
+
+
+        // Check the declaration
+        function checkDeclaration() {
+          var operations = cheatLogicService.getMoveCheckIfCheated($scope.state, $scope.currIndex);
+          gameService.makeMove(operations);
+        }
+
+        // Check if the game ends, and if so, send the end game operations
+        function checkEndGame() {
+          var winner = cheatLogicService.getWinner($scope.state);
+          if (winner != -1) {
+            var operation = cheatLogicService.getWinMove($scope.state);
+            gameService.makeMove(operation);
+          }
+        }
+
         // Send computer move
         function sendComputerMove() {
           var operations = cheatLogicService.createComputerMove($scope.state, $scope.currIndex);
@@ -169,40 +191,46 @@
          * This method update the game's UI.
          */
         function updateUI(params) {
+          // If the state is empty, first initialize the board...
+          if (cheatLogicService.isEmptyObj(params.stateAfterMove)) {
+            gameService.makeMove(cheatLogicService.getInitialMove());
+            return;
+          }
+
           // Get the new state
           $scope.state = params.stateAfterMove;
+          // Get the current player index (For creating computer move...)
           $scope.currIndex = params.turnIndexAfterMove;
-          $scope.yourPlayerIndex = params.yourPlayerIndex;
           $scope.isYourTurn = params.turnIndexAfterMove >= 0 && // game is ongoing
               params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
           $scope.isAiMode = $scope.isYourTurn
               && params.playersInfo[params.yourPlayerIndex].playerId === '';
-          $scope.selectedCards = [];
 
-          if (cheatLogicService.isEmptyObj(params.stateAfterMove)) {
-            // Initialize the board...
-            gameService.makeMove(cheatLogicService.getInitialMove());
-          }
-
+          // Get the cards for player one area, player two area and middle area
+          $scope.middle = $scope.state.middle.clone();
           if (params.playMode === 'playAgainstTheComputer' || params.playMode === 'passAndPlay') {
-            $scope.playerOneCards = $scope.state.white;
-            $scope.playerTwoCards = $scope.state.black;
+            // If the game is played in the same device, use the default setting
+            $scope.playerOneCards = $scope.state.white.clone();
+            $scope.playerTwoCards = $scope.state.black.clone();
           } else {
+            // Otherwise, player one area holds the cards for the player self
             if (params.yourPlayerIndex === 0 && $scope.isYourTurn) {
-              $scope.playerOneCards =  $scope.state.white;
-              $scope.playerTwoCards = $scope.state.black;
+              $scope.playerOneCards =  $scope.state.white.clone();
+              $scope.playerTwoCards = $scope.state.black.clone();
             } else {
-              $scope.playerOneCards =  $scope.state.black;
-              $scope.playerTwoCards = $scope.state.white;
+              $scope.playerOneCards =  $scope.state.black.clone();
+              $scope.playerTwoCards = $scope.state.white.clone();
             }
           }
+
+          sortRanks();
 
           // In case the board is not updated
           if (!$scope.$$phase) {
             $scope.$apply();
           }
 
-          // If the game ends, send the end game operation
+          // If the game ends, send the end game operation directly
           checkEndGame();
 
           if ($scope.isYourTurn) {
@@ -221,17 +249,9 @@
 
           if ($scope.isAiMode) {
             $scope.isYourTurn = false;
-            // Wait 500 milliseconds until animation ends.
             $timeout(sendComputerMove, 1500);
           }
         }
-
-        // Before getting any updateUI, we show an empty board to a viewer (so you can't perform moves).
-        //updateUI({playMode: "passAndPlay", stateAfterMove: {}, turnIndexAfterMove: 0, yourPlayerIndex: -2});
-
-        //if ($(window).width() < 800) {
-        //  scaleBodyService.scaleBody({width: 750, height: 1200});
-        //}
 
         /**
          * Set the game!

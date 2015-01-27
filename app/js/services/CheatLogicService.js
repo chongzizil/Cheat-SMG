@@ -708,6 +708,7 @@
           getDeclareCheaterMove: getDeclareCheaterMove,
           getMoveCheckIfCheated: getMoveCheckIfCheated,
           getWinMove: getWinMove,
+          getRankScore: getRankScore,
           getCard: getCard,
           getWinner: getWinner,
           getRankArray: getRankArray,
