@@ -76,8 +76,6 @@
             }
           }
           sortRanks();
-          console.log(JSON.stringify($scope.middle));
-
 
           // In case the board is not updated
           if (!$scope.$$phase) {
@@ -153,7 +151,6 @@
           };
           $scope.playerOneCards.sort(sortFunction);
           $scope.playerTwoCards.sort(sortFunction);
-          $scope.middle.sort(sortFunction);
         }
 
         // Update the ranks for claiming
@@ -194,7 +191,6 @@
          * This method update the game's UI.
          */
         function updateUI(params) {
-          console.log(JSON.stringify(params));
           // If the state is empty, first initialize the board...
           if (cheatLogicService.isEmptyObj(params.stateAfterMove)) {
             gameService.makeMove(cheatLogicService.getInitialMove());
@@ -218,9 +214,6 @@
             $scope.playerTwoCards = $scope.state.black.clone();
           } else {
             // Otherwise, player one area holds the cards for the player self
-            console.log(params.yourPlayerIndex);
-            console.log(JSON.stringify($scope.state.white));
-            console.log(JSON.stringify($scope.state.black));
             if (params.yourPlayerIndex === 0) {
               $scope.playerOneCards =  $scope.state.white.clone();
               $scope.playerTwoCards = $scope.state.black.clone();

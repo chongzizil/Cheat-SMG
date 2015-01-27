@@ -1,10 +1,19 @@
 body {
   background-image: url("http://us.cdn1.123rf.com/168nwm/ptahi/ptahi1210/ptahi121000002/15713955-green-baize-seamless-background.jpg");
   font: 100% "Arial Narrow";
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#board {
+  width: 94%;
+  margin: 0 auto;
 }
 
 .claim-rank-body {
-  text-align: center;
+  margin: 0 auto;
 }
 
 .claim-rank-btn {
@@ -12,14 +21,14 @@ body {
 }
 
 .info-panel {
-  width: 700px;
-  height: 150px;
+  width: 100%;
+  /*height: 150px;*/
   position: relative;
-  margin: 3% auto;
+  margin: 2% auto;
   border: 7px solid #030;
-  -moz-border-radius: 20px;
-  -webkit-border-radius: 20px;
-  border-radius: 20px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
   padding-left: 15px;
   padding-right: 40px;
 }
@@ -34,21 +43,20 @@ body {
   font-size: 2em;
   font-weight: bold;
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .cheat-btn {
   color: #FCFAF2;
   font-size: 2em;
   font-weight: bold;
-  height: 2em;
   background: transparent;
   border: 2px solid #030;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  margin: 0 5px 0;
-  padding: 0 0.5em 0;
+  margin: 5px 5px;
+  padding: 5px 10px;
 }
 
 .cheat-btn:hover {
