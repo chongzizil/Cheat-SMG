@@ -38,7 +38,7 @@
 
         // Return true if the card can be dragged/selected...
         $scope.canDrag = function (card) {
-          if ($scope.isYourTurn && $scope.state["card" + card] != null) {
+          if ($scope.isYourTurn && $scope.state.stage === STAGE.DO_CLAIM && $scope.state["card" + card] != null) {
             if ($scope.middle.indexOf(card) !== -1) {
               return true;
             } else if ($scope.middle.length - $scope.state.middle.length < 4) {
@@ -56,7 +56,7 @@
 
         // Select a card
         $scope.selectCard = function(card) {
-          if ($scope.isYourTurn) {
+          if ($scope.isYourTurn && $scope.state.stage === STAGE.DO_CLAIM) {
             // Must select in the player's turn
             if ($scope.middle.indexOf(card) !== -1) {
               // The card is already selected, hence cancel the selection
@@ -140,7 +140,7 @@
 
         // Sort the cards according to the ranks
         function sortRanks() {
-          $scope.playerOneCards.sort(function (cardA, cardB) {
+          var sortFunction = function(cardA, cardB) {
             if ($scope.state["card" + cardA] !== null) {
               // Only sort the cards while they are not hidden
               var rankA = $scope.state["card" + cardA].substring(1);
@@ -150,7 +150,10 @@
               return scoreA - scoreB;
             }
             return 1;
-          });
+          };
+          $scope.playerOneCards.sort(sortFunction);
+          $scope.playerTwoCards.sort(sortFunction);
+          $scope.middle.sort(sortFunction);
         }
 
         // Update the ranks for claiming
@@ -191,6 +194,7 @@
          * This method update the game's UI.
          */
         function updateUI(params) {
+          console.log(JSON.stringify(params));
           // If the state is empty, first initialize the board...
           if (cheatLogicService.isEmptyObj(params.stateAfterMove)) {
             gameService.makeMove(cheatLogicService.getInitialMove());
@@ -214,13 +218,18 @@
             $scope.playerTwoCards = $scope.state.black.clone();
           } else {
             // Otherwise, player one area holds the cards for the player self
-            if (params.yourPlayerIndex === 0 && $scope.isYourTurn) {
+            console.log(params.yourPlayerIndex);
+            console.log(JSON.stringify($scope.state.white));
+            console.log(JSON.stringify($scope.state.black));
+            if (params.yourPlayerIndex === 0) {
               $scope.playerOneCards =  $scope.state.white.clone();
               $scope.playerTwoCards = $scope.state.black.clone();
             } else {
               $scope.playerOneCards =  $scope.state.black.clone();
               $scope.playerTwoCards = $scope.state.white.clone();
             }
+            console.log(JSON.stringify($scope.playerOneCards));
+            console.log(JSON.stringify($scope.playerTwoCards));
           }
 
           sortRanks();
