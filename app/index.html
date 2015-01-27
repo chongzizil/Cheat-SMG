@@ -53,7 +53,7 @@
       <button ng-show="checkStage('DO_CLAIM') && isYourTurn && hasSelectedCards()" type="button" class="cheat-btn" ng-repeat="rank in claimRanks" ng-click="claim(rank)">{{rank}}</button>
 
       <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn" type="button" ng-click="declare(true)" class="cheat-btn">Is cheater!!!</button>
-      <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn" type="button" ng-click="declare(false)" class="cheat-btn">Pass</button>
+      <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn && !hasWinner()" type="button" ng-click="declare(false)" class="cheat-btn">Pass</button>
     </div>
   </div>
 

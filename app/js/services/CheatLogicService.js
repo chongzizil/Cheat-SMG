@@ -414,9 +414,11 @@
 
           switch(state.stage) {
             case STAGE.DO_CLAIM:
-                var claimedCardNum = state.black.length >= 4 ? (Math.floor(Math.random() * 3 + 1)) : state.black.length;
+                var claimedCardNum = state.black.length >= 4 ?
+                    (Math.floor(Math.random() * 4 + 1)) :
+                    (Math.floor(Math.random() * state.black.length + 1));
                 var possibleClaimRanks = getRankArray(state.claim[1]);
-                var claim = [claimedCardNum, possibleClaimRanks[Math.floor(Math.random() * possibleClaimRanks.length)]];
+                var claim = [claimedCardNum,possibleClaimRanks[Math.floor(Math.random() * possibleClaimRanks.length)]];
                 var aiCards = state.black.clone();
                 shuffle(aiCards);
                 var claimedCards = aiCards.slice(0, claimedCardNum);
@@ -424,6 +426,10 @@
               break;
             case STAGE.DECLARE_CHEATER:
                 var declareCheater = Math.random() > 0.5;
+                if (getWinner(state) !== -1) {
+                  // Must declare cheater if the opponent empties all cards...
+                  declareCheater = true;
+                }
                 possibleMove = getDeclareCheaterMove(state, turnIndexBeforeMove, declareCheater);
               break;
             case STAGE.CHECK_CLAIM:

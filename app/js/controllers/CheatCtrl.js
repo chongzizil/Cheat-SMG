@@ -170,10 +170,15 @@
           gameService.makeMove(operations);
         }
 
+        // Check if there's a winner
+        function hasWinner() {
+          return cheatLogicService.getWinner($scope.state) !== -1;
+        }
+
         // Check if the game ends, and if so, send the end game operations
         function checkEndGame() {
-          var winner = cheatLogicService.getWinner($scope.state);
-          if (winner != -1) {
+          if (hasWinner() && $scope.stage === STAGE.DO_CLAIM) {
+            // Only send end game operations in DO_CLAIM stage
             var operation = cheatLogicService.getWinMove($scope.state);
             gameService.makeMove(operation);
           }
@@ -182,9 +187,10 @@
         // Send computer move
         function sendComputerMove() {
           var operations = cheatLogicService.createComputerMove($scope.state, $scope.currIndex);
-          console.log("AI makes a move!");
-          gameService.makeMove(operations);
-
+          console.log(JSON.stringify(operations));
+          if ($scope.currIndex === 1) {
+            gameService.makeMove(operations);
+          }
         }
 
         /**
@@ -249,9 +255,9 @@
             }
           }
 
-          if ($scope.isAiMode) {
+          if ($scope.currIndex === 1 && $scope.isAiMode) {
             $scope.isYourTurn = false;
-            $timeout(sendComputerMove, 1500);
+            $timeout(sendComputerMove, 1000);
           }
         }
 

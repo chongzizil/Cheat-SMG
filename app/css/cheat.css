@@ -34,7 +34,7 @@ body {
 }
 
 .button-panel {
-  margin: 0 auto;
+  text-align: center;
 }
 
 .info-panel p {
@@ -60,9 +60,9 @@ body {
   padding: 5px 10px;
 }
 
-.cheat-btn:hover {
-  cursor: pointer;
-  -moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-  -webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-  box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);
-}
+/*.cheat-btn:hover {*/
+  /*cursor: pointer;*/
+  /*-moz-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+  /*-webkit-box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+  /*box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
+/*}*/
