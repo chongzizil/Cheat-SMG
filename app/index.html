@@ -42,7 +42,7 @@
   </ul>
 
   <ul class="middle grid" dd-drop-target>
-    <li id="{{card}}" ng-repeat="card in middle" dd-draggable={{canDrag(card)}} data-value="{{getCardDataValue(card)}}"><p></p></li>
+    <li id="{{card}}" ng-repeat="card in middle" dd-draggable={{canDrag(card)}} ng-click="selectCard(card)" data-value="{{getCardDataValue(card)}}"><p></p></li>
   </ul>
 
   <div class="info-panel">
@@ -59,7 +59,7 @@
   </div>
 
   <ul class="player-1 grid" dd-drop-target>
-    <li id="{{card}}" ng-repeat="card in playerOneCards" dd-draggable={{canDrag(card)}}  data-value="{{getCardDataValue(card)}}"><p></p></li>
+    <li id="{{card}}" ng-repeat="card in playerOneCards" dd-draggable={{canDrag(card)}} ng-click="selectCard(card)" data-value="{{getCardDataValue(card)}}"><p></p></li>
   </ul>
 </section>
 </body>
