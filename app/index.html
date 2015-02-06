@@ -40,10 +40,6 @@
     <li ng-repeat="card in playerTwoCards" ng-click="selectCard(card)" data-value="{{getCardDataValue(card)}}"><p></p></li>
   </ul>
 
-  <ul class="middle grid" dd-drop-target>
-    <li id="{{card}}" ng-repeat="card in middle" dd-draggable={{canDrag(card)}} ng-click="selectCard(card)" data-value="{{getCardDataValue(card)}}"><p></p></li>
-  </ul>
-
   <div class="info-panel">
     <p ng-show="checkStage('DO_CLAIM') && isYourTurn">Please make a claim.</p>
     <p ng-show="checkStage('DECLARE_CHEATER') && isYourTurn">The opponent claims {{state.claim[0]}} cards of {{state.claim[1]}}. Call cheater?</p>
@@ -56,6 +52,10 @@
       <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn && !hasWinner()" type="button" ng-click="declare(false)" class="cheat-btn">Pass</button>
     </div>
   </div>
+
+  <ul class="middle grid" dd-drop-target>
+    <li id="{{card}}" ng-repeat="card in middle" dd-draggable={{canDrag(card)}} ng-click="selectCard(card)" data-value="{{getCardDataValue(card)}}"><p></p></li>
+  </ul>
 
   <ul class="player-1 grid" dd-drop-target>
     <li id="{{card}}" ng-repeat="card in playerOneCards" dd-draggable={{canDrag(card)}} ng-click="selectCard(card)" data-value="{{getCardDataValue(card)}}"><p></p></li>
