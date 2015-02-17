@@ -94,6 +94,7 @@
 
         // Make a claim
         $scope.claim = function(rank) {
+          $('#doClaimModal').modal('hide');
           var claim = [$scope.middle.length - $scope.state.middle.length, rank];
           var diffM = $scope.middle.clone();
           diffM.selfSubtract($scope.state.middle);
@@ -103,6 +104,7 @@
 
         // Declare a cheater or pass
         $scope.declare = function (declareCheater) {
+          $('#declareModal').modal('hide');
           var operations = cheatLogicService.getDeclareCheaterMove($scope.state, $scope.currIndex, declareCheater);
           gameService.makeMove(operations)
         };
@@ -187,7 +189,6 @@
         // Send computer move
         function sendComputerMove() {
           var operations = cheatLogicService.createComputerMove($scope.state, $scope.currIndex);
-          console.log(JSON.stringify(operations));
           if ($scope.currIndex === 1) {
             gameService.makeMove(operations);
           }
@@ -227,8 +228,6 @@
               $scope.playerOneCards =  $scope.state.black.clone();
               $scope.playerTwoCards = $scope.state.white.clone();
             }
-            console.log(JSON.stringify($scope.playerOneCards));
-            console.log(JSON.stringify($scope.playerTwoCards));
           }
 
           sortRanks();
@@ -241,12 +240,16 @@
           // If the game ends, send the end game operation directly
           checkEndGame();
 
-          if ($scope.isYourTurn) {
+          if ($scope.currIndex == 0) {
             switch($scope.state.stage) {
               case STAGE.DO_CLAIM:
                 updateClaimRanks();
                 break;
               case STAGE.DECLARE_CHEATER:
+                  console.log($scope.currIndex);
+                  console.log($scope.state.stage);
+                  console.log($scope.state.claim);
+                $('#declareModal').modal('show');
                 break;
               case STAGE.CHECK_CLAIM:
                 checkDeclaration();

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Checkers</title>
-  <meta name="description" content="Checkers">
+  <title>Cheat</title>
+  <meta name="description" content="Cheat">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <!--<link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">-->
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
@@ -41,15 +41,14 @@
   </ul>
 
   <div class="info-panel">
-    <p ng-show="checkStage('DO_CLAIM') && isYourTurn">Please make a claim.</p>
-    <p ng-show="checkStage('DECLARE_CHEATER') && isYourTurn">The opponent claims {{state.claim[0]}} cards of {{state.claim[1]}}. Call cheater?</p>
+    <p ng-show="checkStage('DO_CLAIM') && isYourTurn && !hasSelectedCards()">Please make a claim.</p>
     <p ng-show="checkStage('DO_CLAIM') && !isYourTurn">The opponent is making a claim</p>
     <p ng-show="checkStage('DECLARE_CHEATER') && !isYourTurn">The opponent is thinking... Did you cheat?</p>
-    <div class="button-panel">
-      <button ng-show="checkStage('DO_CLAIM') && isYourTurn && hasSelectedCards()" type="button" class="cheat-btn" ng-repeat="rank in claimRanks" ng-click="claim(rank)">{{rank}}</button>
 
-      <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn" type="button" ng-click="declare(true)" class="cheat-btn">Is cheater!!!</button>
-      <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn && !hasWinner()" type="button" ng-click="declare(false)" class="cheat-btn">Pass</button>
+    <div class="button-panel">
+      <button ng-show="checkStage('DO_CLAIM') && isYourTurn && hasSelectedCards()" type="button" class="cheat-btn" data-toggle="modal" data-target="#doClaimModal">
+        Make a claim
+      </button>
     </div>
   </div>
 
@@ -61,5 +60,41 @@
     <li id="{{card}}" ng-repeat="card in playerOneCards" dd-draggable={{canDrag(card)}} ng-click="selectCard(card)" data-value="{{getCardDataValue(card)}}"><p></p></li>
   </ul>
 </section>
+
+
+<!-- Do Claim Modal -->
+<div class="modal fade" data-backdrop="static"  id="doClaimModal" tabindex="-1" role="dialog" aria-labelledby="doClaimModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="doClaimModalLabel">Please choose a rank.</h4>
+      </div>
+      <div class="modal-body">
+        <div class="button-panel">
+          <button type="button" class="btn btn-primary" ng-repeat="rank in claimRanks" ng-click="claim(rank)">{{rank}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Declare Modal -->
+<div class="modal fade" data-backdrop="static"  id="declareModal" tabindex="-1" role="dialog" aria-labelledby="declareModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="declareModalLabel">The opponent claims {{state.claim[0]}} cards of {{state.claim[1]}}.</h4>
+      </div>
+      <div class="modal-body">
+        <div class="button-panel">
+          <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn" type="button" ng-click="declare(true)" class="btn btn-primary">Call cheater!</button>
+          <button ng-show="checkStage('DECLARE_CHEATER') && isYourTurn && !hasWinner()" type="button" ng-click="declare(false)" class="btn btn-primary">Pass</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
