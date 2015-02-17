@@ -57,24 +57,38 @@
         // Select a card
         $scope.selectCard = function(card) {
           if ($scope.isYourTurn && $scope.state.stage === STAGE.DO_CLAIM) {
-            // Must select in the player's turn
-            if ($scope.middle.indexOf(card) !== -1) {
-              // The card is already selected, hence cancel the selection
-              // First delete the card in the middle area, then add it back
-              // to the player one area
-              $scope.middle.splice($scope.middle.indexOf(card), 1);
-              $scope.playerOneCards.push(card);
-            } else if ($scope.middle.length - $scope.state.middle.length < 4) {
-              // Only select at most 4 cards!
-              if ($scope.playerOneCards.indexOf(card) !== -1) {
-                // Select the card.
-                // First delete it from player one area, then add it to the
-                // middle area
-                $scope.playerOneCards.splice($scope.playerOneCards.indexOf(card), 1);
-                $scope.middle.push(card);
+            if ($scope.playMode === 'passAndPlay' && $scope.currIndex == 1) {
+              if ($scope.middle.indexOf(card) !== -1) {
+                $scope.middle.splice($scope.middle.indexOf(card), 1);
+                $scope.playerTwoCards.push(card);
+              } else if ($scope.middle.length - $scope.state.middle.length < 4) {
+                // Only select at most 4 cards!
+                if ($scope.playerTwoCards.indexOf(card) !== -1) {
+                  $scope.playerTwoCards.splice($scope.playerTwoCards.indexOf(card), 1);
+                  $scope.middle.push(card);
+                }
+              }
+            } else {
+              // Must select in the player's turn
+              if ($scope.middle.indexOf(card) !== -1) {
+                // The card is already selected, hence cancel the selection
+                // First delete the card in the middle area, then add it back
+                // to the player one area
+                $scope.middle.splice($scope.middle.indexOf(card), 1);
+                $scope.playerOneCards.push(card);
+              } else if ($scope.middle.length - $scope.state.middle.length < 4) {
+                // Only select at most 4 cards!
+                if ($scope.playerOneCards.indexOf(card) !== -1) {
+                  // Select the card.
+                  // First delete it from player one area, then add it to the
+                  // middle area
+                  $scope.playerOneCards.splice($scope.playerOneCards.indexOf(card), 1);
+                  $scope.middle.push(card);
+                }
               }
             }
           }
+
           sortRanks();
 
           // In case the board is not updated
@@ -212,6 +226,7 @@
               params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
           $scope.isAiMode = $scope.isYourTurn
               && params.playersInfo[params.yourPlayerIndex].playerId === '';
+          $scope.playMode = params.playMode;
 
           // Get the cards for player one area, player two area and middle area
           $scope.middle = $scope.state.middle.clone();
