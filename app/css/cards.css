@@ -82,15 +82,18 @@
   /*box-shadow: inset 0 0 80px rgba(150, 100, 50, 0.3), 0 0 50px rgba(255, 255, 200, 0.8);*/
 /*}*/
 
-.grid > li[data-value*='♣'][data-value], .grid > li[data-value*='♠'][data-value] {
+.grid > li[data-value*='♣'][data-value], .grid > li[data-value*='♠'][data-value],
+.grid-sm > li[data-value*='♣'][data-value], .grid-sm > li[data-value*='♠'][data-value]{
   color: #222;
 }
 
-.grid > li[data-value*='♦'][data-value], .grid > li[data-value*='♥'][data-value] {
+.grid > li[data-value*='♦'][data-value], .grid > li[data-value*='♥'][data-value],
+.grid-sm > li[data-value*='♦'][data-value], .grid-sm > li[data-value*='♥'][data-value]{
   color: #a00;
 }
 
-.grid > li[data-value]:before, .grid > LI[data-value]:after {
+.grid > li[data-value]:before, .grid > LI[data-value]:after,
+.grid-sm > li[data-value]:before, .grid-sm > LI[data-value]:after {
   text-align: center;
   content: attr(data-value);
   width: 1em;
@@ -99,7 +102,7 @@
   line-height: 0.75em;
 }
 
-.grid > li[data-value]:after {
+.grid > li[data-value]:after, .grid-sm > li[data-value]:after {
   right: 0;
   bottom: 4%;
   -moz-transform: rotate(180deg);

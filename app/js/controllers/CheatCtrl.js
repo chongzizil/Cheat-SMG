@@ -240,16 +240,15 @@
           // If the game ends, send the end game operation directly
           checkEndGame();
 
-          if ($scope.currIndex == 0) {
+          if ($scope.isYourTurn) {
             switch($scope.state.stage) {
               case STAGE.DO_CLAIM:
                 updateClaimRanks();
                 break;
               case STAGE.DECLARE_CHEATER:
-                  console.log($scope.currIndex);
-                  console.log($scope.state.stage);
-                  console.log($scope.state.claim);
-                $('#declareModal').modal('show');
+                if (params.playMode === 'passAndPlay' || $scope.currIndex == 0) {
+                  $('#declareModal').modal('show');
+                }
                 break;
               case STAGE.CHECK_CLAIM:
                 checkDeclaration();
