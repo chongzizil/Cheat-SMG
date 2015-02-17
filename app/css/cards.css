@@ -3,7 +3,7 @@
 /*Ref: http://designshack.net/articles/css/css-card-tricks/*/
 
 /* Grid where holds the poker cards :) */
-.grid {
+.grid, .grid-sm {
   width: 100%;
   min-height: 86px;
   border: 7px solid #030;
@@ -17,16 +17,20 @@
   zoom: 1;
 }
 
-.grid:before, .grid:after {
+.grid-sm {
+  min-height: 64.5px;
+}
+
+.grid:before, .grid:after, .grid-sm:before, .grid-sm:after {
   content: "";
   display: table;
 }
 
-.grid:after {
+.grid:after, .grid-sm:after {
   clear: both;
 }
 
-.grid > li {
+.grid > li, .grid-sm > li {
   /*0.70*/
   width: 39.9px;
   height: 61.6px;
@@ -56,11 +60,13 @@
   transform: translateZ(0deg);
   background-color: #fff;
   background-image: url("http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/whitey.png");
-  /*-moz-transition: top 0.5s ease 0.1s, left 0.5s ease 0.1s;*/
-  /*-o-transition: top 0.5s ease 0.1s, left 0.5s ease 0.1s;*/
-  /*-webkit-transition: top 0.5s ease, left 0.5s ease;*/
-  /*-webkit-transition-delay: 0.1s, 0.1s;*/
-  /*transition: top 0.5s ease 0.1s, left 0.5s ease 0.1s;*/
+}
+
+.grid-sm > li {
+  /*0.70 x 0.75*/
+  width: 29.925px;
+  height: 46.2px;
+  margin: 10px -20px 10px 0px;
 }
 
 /*.grid > li.selected {*/
@@ -102,7 +108,7 @@
   transform: rotate(180deg);
 }
 
-.grid > li[data-value=' '][data-value] > p {
+.grid > li[data-value=' '][data-value] > p, .grid-sm > li[data-value=' '][data-value] > p {
   width: 90%;
   height: 92%;
   margin: 5% auto 0;
