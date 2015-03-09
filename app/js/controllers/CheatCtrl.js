@@ -214,7 +214,9 @@
         function updateUI(params) {
           // If the state is empty, first initialize the board...
           if (cheatLogicService.isEmptyObj(params.stateAfterMove)) {
-            gameService.makeMove(cheatLogicService.getInitialMove());
+            if (params.yourPlayerIndex === 0) {
+              gameService.makeMove(cheatLogicService.getInitialMove());
+            }
             return;
           }
 
